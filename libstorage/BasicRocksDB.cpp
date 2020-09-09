@@ -24,6 +24,7 @@
 #include <libconfig/GlobalConfigure.h>
 #include <libdevcore/Exceptions.h>
 #include <boost/filesystem.hpp>
+#include <rocksdb/table.h>
 
 using namespace std;
 using namespace dev;
@@ -41,7 +42,7 @@ rocksdb::Options dev::storage::getRocksDBOptions()
 
     // options.OptimizeLevelStyleCompaction();  // This option will increase much memory too
     options.create_if_missing = true;
-    options.max_open_files = 200;
+    options.max_open_files = 100;
     options.compression = rocksdb::kSnappyCompression;
     return options;
 }
@@ -211,5 +212,15 @@ Status BasicRocksDB::Write(WriteOptions const& options, WriteBatch& batch)
 {
     auto status = m_db->Write(options, &batch);
     checkStatus(status);
+
+    auto table_options = (BlockBasedTableOptions*)m_db->GetOptions().table_factory->GetOptions();
+    auto cache_usage = table_options->block_cache->GetUsage();
+    std::string out1;
+    m_db->GetProperty("rocksdb.estimate-table-readers-mem", &out1);
+    std::string out2;
+    m_db->GetProperty("rocksdb.cur-size-all-mem-tables", &out2);
+    auto pinned_usage  = table_options->block_cache->GetPinnedUsage();
+    ROCKSDB_LOG(INFO) << LOG_KV("cache usage", cache_usage) << LOG_KV("estimate-table-readers-mem", out1)
+                      << LOG_KV("rocksdb.cur-size-all-mem-tables", out2) << LOG_KV("pinned usage", pinned_usage);
     return status;
 }
