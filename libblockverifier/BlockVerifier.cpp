@@ -30,7 +30,6 @@
 #include <tbb/parallel_for.h>
 #include <exception>
 #include <thread>
-#include <mcheck.h>
 
 using namespace dev;
 using namespace std;
@@ -58,7 +57,6 @@ ExecutiveContext::Ptr BlockVerifier::executeBlock(Block& block, BlockInfo const&
     ExecutiveContext::Ptr context = nullptr;
     try
     {
-        mtrace();
         if (g_BCOSConfig.version() >= RC2_VERSION && m_enableParallel)
         {
             context = parallelExecuteBlock(block, parentBlockInfo);
@@ -67,7 +65,6 @@ ExecutiveContext::Ptr BlockVerifier::executeBlock(Block& block, BlockInfo const&
         {
             context = serialExecuteBlock(block, parentBlockInfo);
         }
-        muntrace();
     }
     catch (exception& e)
     {
