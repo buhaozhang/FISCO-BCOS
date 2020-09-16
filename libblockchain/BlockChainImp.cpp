@@ -25,7 +25,7 @@
 #include "libdevcrypto/CryptoInterface.h"
 #include "tbb/parallel_for_each.h"
 #include "gperftools/malloc_extension.h"
-#include "google/heap-profiler.h"
+ #include <gperftools/heap-profiler.h>
 #include <libblockverifier/ExecutiveContext.h>
 #include <libdevcore/CommonData.h>
 #include <libethcore/Block.h>
