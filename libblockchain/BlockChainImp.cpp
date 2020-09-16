@@ -1584,9 +1584,9 @@ CommitResult BlockChainImp::commitBlock(
                 memset(stat, 0, sizeof(char) * 2048);
                 MallocExtension::instance()->GetStats(stat, 2048);
                 std::string heap,heapgrow;
-                MallocExtension::instance()->GetHeapSample(heap);
-                MallocExtension::instance()->GetHeapGrowthStacks(heapgrow);
-                BLOCKCHAIN_LOG(INFO) << "heap stat:" << buff;
+                MallocExtension::instance()->GetHeapSample(&heap);
+                MallocExtension::instance()->GetHeapGrowthStacks(&heapgrow);
+                BLOCKCHAIN_LOG(INFO) << "heap stat:" << stat;
                 BLOCKCHAIN_LOG(INFO) << "heap:" << heap;
                 BLOCKCHAIN_LOG(INFO) << "heap growth:" << heapgrow;
             }
