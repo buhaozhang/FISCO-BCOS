@@ -24,6 +24,7 @@
 #include "BlockChainImp.h"
 #include "libdevcrypto/CryptoInterface.h"
 #include "tbb/parallel_for_each.h"
+#include <gperftools/malloc_extension.h>
 #include <libblockverifier/ExecutiveContext.h>
 #include <libdevcore/CommonData.h>
 #include <libethcore/Block.h>
@@ -1579,6 +1580,10 @@ CommitResult BlockChainImp::commitBlock(
             try
             {
                 context->dbCommit(*block);
+                char buff[2048];
+                memset(buff, 0, sizeof(char) * 2048 + 1);
+                MallocExtension::instance()->GetStats(buff, 2048);
+                BLOCKCHAIN_LOG(INFO) << "simple_examples heap stats is" << buff;
             }
             catch (std::exception& e)
             {
