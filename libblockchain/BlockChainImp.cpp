@@ -29,6 +29,7 @@
 #include <libdevcore/CommonData.h>
 #include <libethcore/Block.h>
 #include <libethcore/CommonJS.h>
+#include <libdevcore/CommonIO.h>
 #include <libethcore/Transaction.h>
 #include <libprecompiled/ConsensusPrecompiled.h>
 #include <libstorage/StorageException.h>
@@ -1586,9 +1587,10 @@ CommitResult BlockChainImp::commitBlock(
                 std::string heap,heapgrow;
                 MallocExtension::instance()->GetHeapSample(&heap);
                 MallocExtension::instance()->GetHeapGrowthStacks(&heapgrow);
+                
+                //writeFile(boost::filesystem::path("./heap"+toString(start_time)));
+                writeFile(boost::filesystem::path("./heapgrowth"+toString(start_time)));
                 BLOCKCHAIN_LOG(INFO) << "heap stat:" << stat;
-                BLOCKCHAIN_LOG(INFO) << "heap:" << heap;
-                BLOCKCHAIN_LOG(INFO) << "heap growth:" << heapgrow;
             }
             catch (std::exception& e)
             {
