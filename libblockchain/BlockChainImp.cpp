@@ -25,6 +25,7 @@
 #include "libdevcrypto/CryptoInterface.h"
 #include "tbb/parallel_for_each.h"
 #include "gperftools/malloc_extension.h"
+#include "google/heap-profiler"
 #include <libblockverifier/ExecutiveContext.h>
 #include <libdevcore/CommonData.h>
 #include <libethcore/Block.h>
@@ -1580,15 +1581,17 @@ CommitResult BlockChainImp::commitBlock(
             write_record_time = utcTime();
             try
             {
+                HeapProfilerStart("profile")
                 context->dbCommit(*block);
+                HeapProfilerStop()
                 char stat[2048];
                 memset(stat, 0, sizeof(char) * 2048);
                 MallocExtension::instance()->GetStats(stat, 2048);
-                std::string heap,heapgrow;
-                MallocExtension::instance()->GetHeapSample(&heap);
-                MallocExtension::instance()->GetHeapGrowthStacks(&heapgrow);
-                writeFile(boost::filesystem::path("./heap_"+toString(start_time)),heap,false);
-                writeFile(boost::filesystem::path("./heapgrowth_"+toString(start_time)),heapgrow,false);
+                // std::string heap,heapgrow;
+                // MallocExtension::instance()->GetHeapSample(&heap);
+                // MallocExtension::instance()->GetHeapGrowthStacks(&heapgrow);
+                // writeFile(boost::filesystem::path("./heap_"+toString(start_time)),heap,false);
+                // writeFile(boost::filesystem::path("./heapgrowth_"+toString(start_time)),heapgrow,false);
                 BLOCKCHAIN_LOG(INFO) << "heap stat:" << stat;
             }
             catch (std::exception& e)
