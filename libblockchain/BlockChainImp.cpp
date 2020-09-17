@@ -1587,9 +1587,8 @@ CommitResult BlockChainImp::commitBlock(
                 std::string heap,heapgrow;
                 MallocExtension::instance()->GetHeapSample(&heap);
                 MallocExtension::instance()->GetHeapGrowthStacks(&heapgrow);
-                
-                //writeFile(boost::filesystem::path("./heap"+toString(start_time)));
-                writeFile(boost::filesystem::path("./heapgrowth"+toString(start_time)),heapgrow,false);
+                writeFile(boost::filesystem::path("./heap_"+toString(start_time)));
+                writeFile(boost::filesystem::path("./heapgrowth_"+toString(start_time)),heapgrow,false);
                 BLOCKCHAIN_LOG(INFO) << "heap stat:" << stat;
             }
             catch (std::exception& e)
